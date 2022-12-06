@@ -10,6 +10,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // sharedPreferences
+        val sharedPref = getSharedPreferences("myPref", MODE_PRIVATE)
+        sharedPref.edit()
+
+
+
+
+
+        // fragments
         val firstFragment = FirstFragment()
         val secondFragment = SecondFragment()
         val thirdFragment = ThirdFragment()

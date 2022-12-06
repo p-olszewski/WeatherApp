@@ -29,12 +29,36 @@
         app:layout_constraintStart_toEndOf="@+id/button1"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/button3"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        app:icon="@drawable/ic_baseline_save_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
+
+    <Button
+        android:id="@+id/button4"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        app:icon="@drawable/ic_baseline_refresh_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:text="refresh"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button1" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment1"
         android:name="com.example.weatherapp.FirstFragment"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/blue_200"
+        android:layout_height="350dp"
+        android:background="@color/blue_700"
         app:layout_constraintBottom_toTopOf="@+id/fragment2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -45,7 +69,7 @@
         android:id="@+id/fragment2"
         android:name="com.example.weatherapp.SecondFragment"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="100dp"
         android:background="@color/blue_500"
         app:layout_constraintBottom_toTopOf="@+id/fragment3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,11 +81,13 @@
         android:id="@+id/fragment3"
         android:name="com.example.weatherapp.ThirdFragment"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/blue_700"
+        android:layout_height="150dp"
+        android:background="@color/blue_200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout="@layout/third_fragment" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
