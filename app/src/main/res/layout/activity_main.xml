@@ -82,38 +82,35 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/blue_500"
             android:contentDescription="@string/app_name"
             android:padding="4dp"
             android:src="@drawable/ic_baseline_save_24"
             android:visibility="invisible"
-            app:backgroundTint="@color/blue_500"
-            app:tint="@color/white" />
+            app:backgroundTint="@color/white"
+            app:tint="@color/blue_700" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/idFABRefresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/blue_500"
             android:contentDescription="@string/app_name"
             android:padding="4dp"
             android:src="@drawable/ic_baseline_refresh_24"
             android:visibility="invisible"
-            app:backgroundTint="@color/blue_500"
-            app:tint="@color/white" />
+            app:backgroundTint="@color/white"
+            app:tint="@color/blue_700" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/idFABAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/blue_500"
             android:contentDescription="@string/app_name"
             android:padding="4dp"
             android:src="@drawable/ic_baseline_add_24"
-            app:backgroundTint="@color/blue_500"
-            app:tint="@color/white" />
+            app:backgroundTint="@color/white"
+            app:tint="@color/blue_700" />
     </LinearLayout>
 
 
