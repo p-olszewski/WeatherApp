@@ -1,6 +1,7 @@
 package com.example.weatherapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.weatherapp.model.WeatherModel
 import com.example.weatherapp.service.WeatherAPIService
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -8,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
-class MainViewModel {
+class MainViewModel: ViewModel(){
     private val weatherAPIService = WeatherAPIService()
     private val disposable = CompositeDisposable()
 

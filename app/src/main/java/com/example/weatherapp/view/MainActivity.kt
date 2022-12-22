@@ -1,20 +1,36 @@
 package com.example.weatherapp.view
 
+import android.arch.lifecycle.ViewModelProviders
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
 import com.example.weatherapp.service.ViewPagerAdapter
+import com.example.weatherapp.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var viewModel: MainViewModel
+    // needed!
+    private lateinit var GET: SharedPreferences
+    private lateinit var SET: SharedPreferences.Editor
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        GET = getSharedPreferences(packageName, MODE_PRIVATE)
+        SET = GET.edit()
+
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
 
         // variables and constants
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
@@ -25,8 +41,8 @@ class MainActivity : AppCompatActivity() {
         var fabVisible = false
 
         // sharedPreferences
-        val sharedPref = getSharedPreferences("myPref", MODE_PRIVATE)
-        sharedPref.edit()
+//        val sharedPref = getSharedPreferences("myPref", MODE_PRIVATE)
+//        sharedPref.edit()
 
         // ViewPager
         val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
