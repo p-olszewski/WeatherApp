@@ -1,11 +1,12 @@
-package com.example.weatherapp
+package com.example.weatherapp.view
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
+import com.example.weatherapp.R
+import com.example.weatherapp.service.ViewPagerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

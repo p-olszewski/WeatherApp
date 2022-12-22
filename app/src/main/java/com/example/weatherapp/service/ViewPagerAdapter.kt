@@ -1,12 +1,12 @@
-package com.example.weatherapp
+package com.example.weatherapp.service
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.weatherapp.fragments.FirstFragment
-import com.example.weatherapp.fragments.SecondFragment
-import com.example.weatherapp.fragments.ThirdFragment
+import com.example.weatherapp.view.FirstFragment
+import com.example.weatherapp.view.SecondFragment
+import com.example.weatherapp.view.ThirdFragment
 
 class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle): FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int {
