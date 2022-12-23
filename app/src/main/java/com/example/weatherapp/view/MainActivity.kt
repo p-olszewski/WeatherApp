@@ -1,6 +1,5 @@
 package com.example.weatherapp.view
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -47,14 +46,14 @@ class MainActivity : AppCompatActivity() {
 //        val sharedPref = getSharedPreferences("myPref", MODE_PRIVATE)
 //        sharedPref.edit()
 
-        GET = getSharedPreferences(packageName, MODE_PRIVATE)
-        SET = GET.edit()
-
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        var cityName = GET.getString("cityName", "Lodz")
-        tvCityName.text = cityName
-        viewModel.refreshData()
-        getLiveData()
+//        GET = getSharedPreferences(packageName, MODE_PRIVATE)
+//        SET = GET.edit()
+//
+//        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+//        var cityName = GET.getString("cityName", "Lodz")
+//        tvCityName.text = cityName
+//        viewModel.refreshData()
+//        getLiveData()
 
 
         // ViewPager
