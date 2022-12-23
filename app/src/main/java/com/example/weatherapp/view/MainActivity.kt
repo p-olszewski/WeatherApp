@@ -3,22 +3,25 @@ package com.example.weatherapp.view
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
+import com.example.weatherapp.model.WeatherData
+import com.example.weatherapp.service.ApiInterface
 import com.example.weatherapp.service.ViewPagerAdapter
-import com.example.weatherapp.viewmodel.MainViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import retrofit2.*
+import retrofit2.converter.gson.GsonConverterFactory
+
+const val BASE_URL = "https://api.openweathermap.org/"
+var temp: String = ""
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var viewModel: MainViewModel
     // needed!
     private lateinit var GET: SharedPreferences
     private lateinit var SET: SharedPreferences.Editor
@@ -41,19 +44,6 @@ class MainActivity : AppCompatActivity() {
         val refreshFAB = findViewById<FloatingActionButton>(R.id.idFABRefresh)
         val saveFAB = findViewById<FloatingActionButton>(R.id.idFABSave)
         var fabVisible = false
-
-        // sharedPreferences
-//        val sharedPref = getSharedPreferences("myPref", MODE_PRIVATE)
-//        sharedPref.edit()
-
-//        GET = getSharedPreferences(packageName, MODE_PRIVATE)
-//        SET = GET.edit()
-//
-//        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-//        var cityName = GET.getString("cityName", "Lodz")
-//        tvCityName.text = cityName
-//        viewModel.refreshData()
-//        getLiveData()
 
 
         // ViewPager
@@ -84,6 +74,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // API
+        getMyData()
+
         refreshFAB.setOnClickListener {
             Toast.makeText(this@MainActivity, "Refresh clicked..", Toast.LENGTH_SHORT).show()
         }
@@ -93,10 +86,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getLiveData() {
-        viewModel.weatherData.observe(this, Observer { data ->
-            data?.let {
+    private fun getMyData() {
+        val retrofitBuilder = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .build()
+            .create(ApiInterface::class.java)
 
+        val retrofitData = retrofitBuilder.getData()
+        retrofitData.enqueue(object : Callback<WeatherData?> {
+            override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
+                val responseBody = response.body()
+                val myStringBuilder = StringBuilder()
+                if (responseBody != null) {
+                    myStringBuilder.append(responseBody.main.temp.toString())
+                    Log.d("MainActivity", responseBody.main.temp.toString())
+                    Log.d("MainActivity", responseBody.main.pressure.toString())
+                    Log.d("MainActivity", responseBody.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<WeatherData?>, t: Throwable) {
+                Log.d("MainActivity", "Error")
             }
         })
     }
