@@ -8,7 +8,7 @@ import com.example.weatherapp.view.FirstFragment
 import com.example.weatherapp.view.SecondFragment
 import com.example.weatherapp.view.ThirdFragment
 
-class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle): FragmentStateAdapter(fragmentManager, lifecycle) {
+class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount(): Int {
         return 3
     }
