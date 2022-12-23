@@ -25,11 +25,13 @@ class MainActivity : AppCompatActivity() {
     // needed!
     private lateinit var GET: SharedPreferences
     private lateinit var SET: SharedPreferences.Editor
+    private lateinit var test: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        test = findViewById<TextView>(R.id.testTextView)
 
         // variables and constants
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d("MainActivity", responseBody.main.temp.toString())
                     Log.d("MainActivity", responseBody.main.pressure.toString())
                     Log.d("MainActivity", responseBody.toString())
+                    test.text = responseBody.main.temp.toString()
                 }
             }
 
