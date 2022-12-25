@@ -28,11 +28,6 @@ class FirstFragment : Fragment() {
 
     fun updateCityName(text: String) {
         val tvCityName = view?.findViewById<TextView>(R.id.tvCityName)
-//        val tvTemp = view?.findViewById<TextView>(R.id.tvTemp)
-//        val tvCoords = view?.findViewById<TextView>(R.id.tvCoords)
-//        val tvPressure = view?.findViewById<TextView>(R.id.tvPressure)
-//        val tvRefreshTime = view?.findViewById<TextView>(R.id.tvRefreshTime)
-
         tvCityName?.text = text
     }
 }
