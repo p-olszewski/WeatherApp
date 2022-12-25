@@ -47,19 +47,21 @@ class MainActivity : AppCompatActivity() {
         }.attach()
 
         // FloatingActionButton toggle
-        binding.idFABAdd.setOnClickListener {
-            if (!fabVisible) {
-                binding.idFABRefresh.show()
-                binding.idFABRefresh.visibility = View.VISIBLE
-                binding.idFABSave.show()
-                binding.idFABSave.visibility = View.VISIBLE
-                fabVisible = true
-            } else {
-                binding.idFABRefresh.hide()
-                binding.idFABRefresh.visibility = View.INVISIBLE
-                binding.idFABSave.hide()
-                binding.idFABSave.visibility = View.INVISIBLE
-                fabVisible = false
+        binding.apply {
+            idFABAdd.setOnClickListener {
+                if (!fabVisible) {
+                    idFABRefresh.show()
+                    idFABRefresh.visibility = View.VISIBLE
+                    idFABSave.show()
+                    idFABSave.visibility = View.VISIBLE
+                    fabVisible = true
+                } else {
+                    idFABRefresh.hide()
+                    idFABRefresh.visibility = View.INVISIBLE
+                    idFABSave.hide()
+                    idFABSave.visibility = View.INVISIBLE
+                    fabVisible = false
+                }
             }
         }
 
@@ -92,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d("MainActivity", responseBody.main.temp.toString())
                     Log.d("MainActivity", responseBody.main.pressure.toString())
                     Log.d("MainActivity", responseBody.toString())
-                    test.text = responseBody.main.temp.toString()
+                    binding.testTextView.text = responseBody.main.temp.toString()
                 }
             }
 
