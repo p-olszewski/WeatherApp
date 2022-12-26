@@ -20,13 +20,9 @@ import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://api.openweathermap.org/"
-var temp: String = ""
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var GET: SharedPreferences
-    private lateinit var SET: SharedPreferences.Editor
-    private lateinit var test: TextView
     var fabVisible = false
 
 
@@ -46,6 +42,9 @@ class MainActivity : AppCompatActivity() {
             }
         }.attach()
 
+        // API
+        getMyData()
+
         // FloatingActionButton toggle
         binding.apply {
             idFABAdd.setOnClickListener {
@@ -64,9 +63,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        // API
-        getMyData()
 
         binding.idFABRefresh.setOnClickListener {
             Toast.makeText(this@MainActivity, "Refresh clicked..", Toast.LENGTH_SHORT).show()
@@ -88,18 +84,19 @@ class MainActivity : AppCompatActivity() {
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
                 val responseBody = response.body()
-                val myStringBuilder = StringBuilder()
                 if (responseBody != null) {
-                    myStringBuilder.append(responseBody.main.temp.toString())
-                    Log.d("MainActivity", responseBody.main.temp.toString())
-                    Log.d("MainActivity", responseBody.main.pressure.toString())
-                    Log.d("MainActivity", responseBody.toString())
+                    Log.d("ApiResponse ok: ", responseBody.toString())
                     binding.testTextView.text = responseBody.main.temp.toString()
+                    binding.viewPager.findViewById<TextView>(R.id.tvCityName).text = responseBody.name
+//                    binding.viewPager.findViewById<TextView>(R.id.tvCoords).text = responseBody.coord.toString()
+                    binding.viewPager.findViewById<TextView>(R.id.tvWeatherDescription).text = responseBody.weather.description
+                    binding.viewPager.findViewById<TextView>(R.id.tvPressure).text = responseBody.main.pressure.toString()
+                    binding.viewPager.findViewById<TextView>(R.id.tvTemp).text = responseBody.main.temp.toString()
                 }
             }
 
             override fun onFailure(call: Call<WeatherData?>, t: Throwable) {
-                Log.d("MainActivity", "Error")
+                Log.d("ApiResponse error: ", "Error")
             }
         })
     }

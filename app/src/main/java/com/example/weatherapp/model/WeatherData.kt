@@ -27,7 +27,7 @@ data class WeatherData(
     @SerializedName("visibility")
     val visibility: Int,
     @SerializedName("weather")
-    val weather: List<Weather>,
+    val weather: Weather,
     @SerializedName("wind")
     val wind: Wind
 )
