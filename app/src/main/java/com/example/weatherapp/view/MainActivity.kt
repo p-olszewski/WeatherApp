@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
+import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.model.WeatherData
 import com.example.weatherapp.service.ApiInterface
 import com.example.weatherapp.service.ViewPagerAdapter
@@ -22,36 +23,22 @@ const val BASE_URL = "https://api.openweathermap.org/"
 var temp: String = ""
 
 class MainActivity : AppCompatActivity() {
-    // needed!
+    private lateinit var binding: ActivityMainBinding
     private lateinit var GET: SharedPreferences
     private lateinit var SET: SharedPreferences.Editor
     private lateinit var test: TextView
+    var fabVisible = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        test = findViewById<TextView>(R.id.testTextView)
-
-        // variables and constants
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
-        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
-        val tvCityName = viewPager.findViewById<TextView>(R.id.tvCityName)
-        val tvTemp = viewPager.findViewById<TextView>(R.id.tvTemp)
-        val tvCoords = viewPager.findViewById<TextView>(R.id.tvCoords)
-        val tvPressure = viewPager.findViewById<TextView>(R.id.tvPressure)
-        val tvRefreshTime = viewPager.findViewById<TextView>(R.id.tvRefreshTime)
-        val ivWeatherImage = viewPager.findViewById<TextView>(R.id.ivWeatherImage)
-        val addFAB = findViewById<FloatingActionButton>(R.id.idFABAdd)
-        val refreshFAB = findViewById<FloatingActionButton>(R.id.idFABRefresh)
-        val saveFAB = findViewById<FloatingActionButton>(R.id.idFABSave)
-        var fabVisible = false
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // ViewPager
         val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
-        viewPager.adapter = adapter
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        binding.viewPager.adapter = adapter
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when (position) {
                 0 -> tab.text = "Basic"
                 1 -> tab.text = "Advanced"
@@ -60,18 +47,18 @@ class MainActivity : AppCompatActivity() {
         }.attach()
 
         // FloatingActionButton toggle
-        addFAB.setOnClickListener {
+        binding.idFABAdd.setOnClickListener {
             if (!fabVisible) {
-                refreshFAB.show()
-                refreshFAB.visibility = View.VISIBLE
-                saveFAB.show()
-                saveFAB.visibility = View.VISIBLE
+                binding.idFABRefresh.show()
+                binding.idFABRefresh.visibility = View.VISIBLE
+                binding.idFABSave.show()
+                binding.idFABSave.visibility = View.VISIBLE
                 fabVisible = true
             } else {
-                refreshFAB.hide()
-                refreshFAB.visibility = View.INVISIBLE
-                saveFAB.hide()
-                saveFAB.visibility = View.INVISIBLE
+                binding.idFABRefresh.hide()
+                binding.idFABRefresh.visibility = View.INVISIBLE
+                binding.idFABSave.hide()
+                binding.idFABSave.visibility = View.INVISIBLE
                 fabVisible = false
             }
         }
@@ -79,11 +66,11 @@ class MainActivity : AppCompatActivity() {
         // API
         getMyData()
 
-        refreshFAB.setOnClickListener {
+        binding.idFABRefresh.setOnClickListener {
             Toast.makeText(this@MainActivity, "Refresh clicked..", Toast.LENGTH_SHORT).show()
         }
 
-        saveFAB.setOnClickListener {
+        binding.idFABSave.setOnClickListener {
             Toast.makeText(this@MainActivity, "Save clicked..", Toast.LENGTH_SHORT).show()
         }
     }
