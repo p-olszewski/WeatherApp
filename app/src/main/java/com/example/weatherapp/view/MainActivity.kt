@@ -21,6 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -85,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvCityName).text = myResponseBody.name
         findViewById<TextView>(R.id.tvCoords).text = myResponseBody.coord.toString()
         findViewById<TextView>(R.id.tvTemp).text = buildString {
-            append(myResponseBody.main.temp)
+            append(myResponseBody.main.temp.roundToInt())
             append("°C")
         }
         findViewById<TextView>(R.id.tvWeatherDescription).text = myResponseBody.weather[0].description
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvRefreshTime).text = time
 
         val ivWeatherImage = findViewById<ImageView>(R.id.ivWeatherImage)
-        when(myResponseBody.weather[0].main) {
+        when (myResponseBody.weather[0].main) {
             "Thunderstorm" -> ivWeatherImage.setImageResource(R.drawable._729387_weather_cloudy_lightning_cloud_forecast)
             "Drizzle" -> ivWeatherImage.setImageResource(R.drawable._729390_weather_drip_forecast_drop_cloud)
             "Rain" -> ivWeatherImage.setImageResource(R.drawable._729383_forecast_rain_cloud_weather_raining)
