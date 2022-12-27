@@ -19,8 +19,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -30,11 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // ViewPager
         prepareViewPager()
-
-        // FloatingActionButton toggle
         prepareFloatingActionButtons()
     }
 
@@ -100,8 +94,6 @@ class MainActivity : AppCompatActivity() {
         val formatter = SimpleDateFormat("hh:mm")
         val time = formatter.format(Calendar.getInstance().time)
         findViewById<TextView>(R.id.tvRefreshTime).text = time
-
-
         Log.d("myResponseBody", myResponseBody.toString())
     }
 
