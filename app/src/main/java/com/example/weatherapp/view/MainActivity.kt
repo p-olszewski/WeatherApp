@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
 import com.example.weatherapp.model.WeatherData
 import com.example.weatherapp.service.ApiInterface
+import com.example.weatherapp.service.RetrofitInstance
 import com.example.weatherapp.service.ViewPagerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var GET: SharedPreferences
     private lateinit var SET: SharedPreferences.Editor
     private lateinit var test: TextView
+//    lateinit var response
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,13 +91,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getMyData() {
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build()
-            .create(ApiInterface::class.java)
-
-        val retrofitData = retrofitBuilder.getData()
+        val retrofitData = RetrofitInstance.api.getData()
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
                 val responseBody = response.body()
