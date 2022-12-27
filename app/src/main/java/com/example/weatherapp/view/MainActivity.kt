@@ -84,7 +84,11 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     private fun updateViews() {
         findViewById<TextView>(R.id.tvCityName).text = myResponseBody.name
-        findViewById<TextView>(R.id.tvCoords).text = myResponseBody.coord.toString()
+        findViewById<TextView>(R.id.tvCoords).text = buildString {
+            append(myResponseBody.coord.lat.toString())
+            append(", ")
+            append(myResponseBody.coord.lon.toString())
+        }
         findViewById<TextView>(R.id.tvTemp).text = buildString {
             append(myResponseBody.main.temp.roundToInt())
             append("°C")
@@ -94,10 +98,7 @@ class MainActivity : AppCompatActivity() {
             append(myResponseBody.main.pressure.toString())
             append(" hPa")
         }
-        val formatter = SimpleDateFormat("HH:mm")
-        val time = formatter.format(Calendar.getInstance().time)
-        findViewById<TextView>(R.id.tvRefreshTime).text = time
-
+        findViewById<TextView>(R.id.tvRefreshTime).text = SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
         val ivWeatherImage = findViewById<ImageView>(R.id.ivWeatherImage)
         when (myResponseBody.weather[0].main) {
             "Thunderstorm" -> ivWeatherImage.setImageResource(R.drawable._729387_weather_cloudy_lightning_cloud_forecast)
