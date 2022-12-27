@@ -1,9 +1,11 @@
 package com.example.weatherapp.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,6 +19,7 @@ import com.example.weatherapp.service.ViewPagerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,8 +72,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonSearch.setOnClickListener {
-            val city = findViewById<TextView>(R.id.cityInput).text.toString()
-            getWeatherData(city)
+            val inputField = findViewById<TextInputEditText>(R.id.cityInput)
+            getWeatherData(inputField.text.toString())
+            // exit input field and hide keyboard
+            inputField.clearFocus()
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(inputField.windowToken, 0)
+            inputField.clearComposingText()
         }
     }
 
