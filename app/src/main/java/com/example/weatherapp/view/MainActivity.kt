@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             append(myResponseBody.main.temp)
             append("°C")
         }
-//        findViewById<TextView>(R.id.tvWeatherDescription).text = myResponseBody.weather[0].description
+        findViewById<TextView>(R.id.tvWeatherDescription).text = myResponseBody.weather[0].description
         findViewById<TextView>(R.id.tvPressure).text = buildString {
             append(myResponseBody.main.pressure.toString())
             append(" hPa")
