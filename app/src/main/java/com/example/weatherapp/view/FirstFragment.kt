@@ -9,11 +9,6 @@ import androidx.fragment.app.Fragment
 import com.example.weatherapp.R
 
 class FirstFragment : Fragment() {
-//    lateinit var tvCityName: TextView
-//    lateinit var tvTemp: TextView
-//    lateinit var tvCoords: TextView
-//    lateinit var tvPressure: TextView
-//    lateinit var tvRefreshTime: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,8 +16,6 @@ class FirstFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.first_fragment, container, false)
-//        val testTemp = view.findViewById<TextView>(R.id.tvTemp)
-//        testTemp.text = "123"
         return view
     }
 

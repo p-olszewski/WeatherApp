@@ -1,6 +1,6 @@
 package com.example.weatherapp.view
 
-import android.content.SharedPreferences
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,45 +18,31 @@ import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var test: TextView
-    lateinit var myResponse: Response<WeatherData?>
     lateinit var myResponseBody: WeatherData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        test = findViewById<TextView>(R.id.testTextView)
 
-        // variables and constants
-        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
-        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
-        val tvCityName = viewPager.findViewById<TextView>(R.id.tvCityName)
-        val tvTemp = viewPager.findViewById<TextView>(R.id.tvTemp)
-        val tvCoords = viewPager.findViewById<TextView>(R.id.tvCoords)
-        val tvPressure = viewPager.findViewById<TextView>(R.id.tvPressure)
-        val tvRefreshTime = viewPager.findViewById<TextView>(R.id.tvRefreshTime)
-        val ivWeatherImage = viewPager.findViewById<TextView>(R.id.ivWeatherImage)
+        // ViewPager
+        prepareViewPager()
+
+        // FloatingActionButton toggle
+        prepareFloatingActionButtons()
+    }
+
+    private fun prepareFloatingActionButtons() {
         val addFAB = findViewById<FloatingActionButton>(R.id.idFABAdd)
         val refreshFAB = findViewById<FloatingActionButton>(R.id.idFABRefresh)
         val saveFAB = findViewById<FloatingActionButton>(R.id.idFABSave)
         var fabVisible = false
-
-
-        // ViewPager
-        val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
-        viewPager.adapter = adapter
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            when (position) {
-                0 -> tab.text = "Basic"
-                1 -> tab.text = "Advanced"
-                2 -> tab.text = "Forecast"
-            }
-        }.attach()
-
-        // FloatingActionButton toggle
         addFAB.setOnClickListener {
             if (!fabVisible) {
                 refreshFAB.show()
@@ -74,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshFAB.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Refreshing data...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "Syncing data...", Toast.LENGTH_SHORT).show()
             // API
             getMyData()
         }
@@ -84,22 +70,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun prepareViewPager() {
+        val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+        viewPager.adapter = adapter
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            when (position) {
+                0 -> tab.text = "Basic"
+                1 -> tab.text = "Advanced"
+                2 -> tab.text = "Forecast"
+            }
+        }.attach()
+    }
+
+    @SuppressLint("SimpleDateFormat")
     private fun updateViews() {
-        Log.d("tescik", myResponseBody.toString())
-        Log.d("MainActivity", myResponseBody.main.temp.toString())
-        Log.d("MainActivity", myResponseBody.main.pressure.toString())
-        Log.d("MainActivity", myResponseBody.toString())
-        test.text = myResponseBody.main.temp.toString()
+        findViewById<TextView>(R.id.tvCityName).text = myResponseBody.name
+        findViewById<TextView>(R.id.tvCoords).text = myResponseBody.coord.toString()
+        findViewById<TextView>(R.id.tvTemp).text = buildString {
+            append(myResponseBody.main.temp)
+            append("°C")
+        }
+        findViewById<TextView>(R.id.tvWeatherDescription).text = myResponseBody.weather[0].description
+        findViewById<TextView>(R.id.tvPressure).text = buildString {
+            append(myResponseBody.main.pressure.toString())
+            append(" hPa")
+        }
+        val formatter = SimpleDateFormat("hh:mm")
+        val time = formatter.format(Calendar.getInstance().time)
+        findViewById<TextView>(R.id.tvRefreshTime).text = time
+
+
+        Log.d("myResponseBody", myResponseBody.toString())
     }
 
     private fun getMyData() {
         val retrofitData = RetrofitInstance.api.getData()
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
-                myResponse = response
                 myResponseBody = response.body()!!
                 updateViews()
-
             }
 
             override fun onFailure(call: Call<WeatherData?>, t: Throwable) {

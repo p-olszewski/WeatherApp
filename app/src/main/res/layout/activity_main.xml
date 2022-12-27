@@ -24,12 +24,6 @@
             android:layout_height="wrap_content"
             android:hint="Enter city" />
 
-        <TextView
-            android:id="@+id/testTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
