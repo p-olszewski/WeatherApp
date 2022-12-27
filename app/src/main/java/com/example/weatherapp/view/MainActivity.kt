@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         prepareViewPager()
         prepareFloatingActionButtons()
+        getWeatherData()
     }
 
     private fun prepareFloatingActionButtons() {
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         refreshFAB.setOnClickListener {
             Toast.makeText(this@MainActivity, "Syncing data...", Toast.LENGTH_SHORT).show()
             // API
-            getMyData()
+            getWeatherData()
         }
 
         saveFAB.setOnClickListener {
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("myResponseBody", myResponseBody.toString())
     }
 
-    private fun getMyData() {
+    private fun getWeatherData() {
         val retrofitData = RetrofitInstance.api.getData()
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
