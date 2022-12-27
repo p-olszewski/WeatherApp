@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -25,17 +26,18 @@ import kotlin.math.roundToInt
 
 
 class MainActivity : AppCompatActivity() {
-    lateinit var myResponseBody: WeatherData
+    lateinit var apiResponseBody: WeatherData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         prepareViewPager()
-        prepareFloatingActionButtons()
-        getWeatherData()
+        buttonsInit()
+        getWeatherData("Łódź") // default location
     }
 
-    private fun prepareFloatingActionButtons() {
+    private fun buttonsInit() {
+        val buttonSearch = findViewById<Button>(R.id.buttonSearch)
         val addFAB = findViewById<FloatingActionButton>(R.id.idFABAdd)
         val refreshFAB = findViewById<FloatingActionButton>(R.id.idFABRefresh)
         val saveFAB = findViewById<FloatingActionButton>(R.id.idFABSave)
@@ -59,11 +61,16 @@ class MainActivity : AppCompatActivity() {
         refreshFAB.setOnClickListener {
             Toast.makeText(this@MainActivity, "Syncing data...", Toast.LENGTH_SHORT).show()
             // API
-            getWeatherData()
+            getWeatherData(apiResponseBody.name)
         }
 
         saveFAB.setOnClickListener {
             Toast.makeText(this@MainActivity, "Save clicked..", Toast.LENGTH_SHORT).show()
+        }
+
+        buttonSearch.setOnClickListener {
+            val city = findViewById<TextView>(R.id.cityInput).text.toString()
+            getWeatherData(city)
         }
     }
 
@@ -83,24 +90,24 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun updateViews() {
-        findViewById<TextView>(R.id.tvCityName).text = myResponseBody.name
+        findViewById<TextView>(R.id.tvCityName).text = apiResponseBody.name
         findViewById<TextView>(R.id.tvCoords).text = buildString {
-            append(myResponseBody.coord.lat.toString())
+            append(apiResponseBody.coord.lat.toString())
             append(", ")
-            append(myResponseBody.coord.lon.toString())
+            append(apiResponseBody.coord.lon.toString())
         }
         findViewById<TextView>(R.id.tvTemp).text = buildString {
-            append(myResponseBody.main.temp.roundToInt())
+            append(apiResponseBody.main.temp.roundToInt())
             append("°C")
         }
-        findViewById<TextView>(R.id.tvWeatherDescription).text = myResponseBody.weather[0].description
+        findViewById<TextView>(R.id.tvWeatherDescription).text = apiResponseBody.weather[0].description
         findViewById<TextView>(R.id.tvPressure).text = buildString {
-            append(myResponseBody.main.pressure.toString())
+            append(apiResponseBody.main.pressure.toString())
             append(" hPa")
         }
         findViewById<TextView>(R.id.tvRefreshTime).text = SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
         val ivWeatherImage = findViewById<ImageView>(R.id.ivWeatherImage)
-        when (myResponseBody.weather[0].main) {
+        when (apiResponseBody.weather[0].main) {
             "Thunderstorm" -> ivWeatherImage.setImageResource(R.drawable._729387_weather_cloudy_lightning_cloud_forecast)
             "Drizzle" -> ivWeatherImage.setImageResource(R.drawable._729390_weather_drip_forecast_drop_cloud)
             "Rain" -> ivWeatherImage.setImageResource(R.drawable._729383_forecast_rain_cloud_weather_raining)
@@ -110,14 +117,14 @@ class MainActivity : AppCompatActivity() {
             else -> ivWeatherImage.setImageResource(R.drawable._729392_cloudy_sunny_forecast_sun_cloud_weather)
         }
 
-        Log.d("myResponseBody", myResponseBody.toString())
+        Log.d("myResponseBody", apiResponseBody.toString())
     }
 
-    private fun getWeatherData() {
-        val retrofitData = RetrofitInstance.api.getData()
+    private fun getWeatherData(city: String) {
+        val retrofitData = RetrofitInstance.api.getData(city)
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
-                myResponseBody = response.body()!!
+                apiResponseBody = response.body()!!
                 updateViews()
             }
 
