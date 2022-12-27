@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             append(myResponseBody.main.pressure.toString())
             append(" hPa")
         }
-        val formatter = SimpleDateFormat("hh:mm")
+        val formatter = SimpleDateFormat("HH:mm")
         val time = formatter.format(Calendar.getInstance().time)
         findViewById<TextView>(R.id.tvRefreshTime).text = time
 
