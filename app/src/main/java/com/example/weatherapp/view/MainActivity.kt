@@ -1,102 +1,120 @@
 package com.example.weatherapp.view
 
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
-import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.model.WeatherData
-import com.example.weatherapp.service.ApiInterface
+import com.example.weatherapp.service.RetrofitInstance
 import com.example.weatherapp.service.ViewPagerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import retrofit2.*
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
-const val BASE_URL = "https://api.openweathermap.org/"
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    var fabVisible = false
-
+    lateinit var myResponseBody: WeatherData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_main)
 
         // ViewPager
+        prepareViewPager()
+
+        // FloatingActionButton toggle
+        prepareFloatingActionButtons()
+    }
+
+    private fun prepareFloatingActionButtons() {
+        val addFAB = findViewById<FloatingActionButton>(R.id.idFABAdd)
+        val refreshFAB = findViewById<FloatingActionButton>(R.id.idFABRefresh)
+        val saveFAB = findViewById<FloatingActionButton>(R.id.idFABSave)
+        var fabVisible = false
+        addFAB.setOnClickListener {
+            if (!fabVisible) {
+                refreshFAB.show()
+                refreshFAB.visibility = View.VISIBLE
+                saveFAB.show()
+                saveFAB.visibility = View.VISIBLE
+                fabVisible = true
+            } else {
+                refreshFAB.hide()
+                refreshFAB.visibility = View.INVISIBLE
+                saveFAB.hide()
+                saveFAB.visibility = View.INVISIBLE
+                fabVisible = false
+            }
+        }
+
+        refreshFAB.setOnClickListener {
+            Toast.makeText(this@MainActivity, "Syncing data...", Toast.LENGTH_SHORT).show()
+            // API
+            getMyData()
+        }
+
+        saveFAB.setOnClickListener {
+            Toast.makeText(this@MainActivity, "Save clicked..", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun prepareViewPager() {
         val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
-        binding.viewPager.adapter = adapter
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+        viewPager.adapter = adapter
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
                 0 -> tab.text = "Basic"
                 1 -> tab.text = "Advanced"
                 2 -> tab.text = "Forecast"
             }
         }.attach()
+    }
 
-        // API
-        getMyData()
-
-        // FloatingActionButton toggle
-        binding.apply {
-            idFABAdd.setOnClickListener {
-                if (!fabVisible) {
-                    idFABRefresh.show()
-                    idFABRefresh.visibility = View.VISIBLE
-                    idFABSave.show()
-                    idFABSave.visibility = View.VISIBLE
-                    fabVisible = true
-                } else {
-                    idFABRefresh.hide()
-                    idFABRefresh.visibility = View.INVISIBLE
-                    idFABSave.hide()
-                    idFABSave.visibility = View.INVISIBLE
-                    fabVisible = false
-                }
-            }
+    @SuppressLint("SimpleDateFormat")
+    private fun updateViews() {
+        findViewById<TextView>(R.id.tvCityName).text = myResponseBody.name
+        findViewById<TextView>(R.id.tvCoords).text = myResponseBody.coord.toString()
+        findViewById<TextView>(R.id.tvTemp).text = buildString {
+            append(myResponseBody.main.temp)
+            append("°C")
         }
-
-        binding.idFABRefresh.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Refresh clicked..", Toast.LENGTH_SHORT).show()
+//        findViewById<TextView>(R.id.tvWeatherDescription).text = myResponseBody.weather[0].description
+        findViewById<TextView>(R.id.tvPressure).text = buildString {
+            append(myResponseBody.main.pressure.toString())
+            append(" hPa")
         }
+        val formatter = SimpleDateFormat("hh:mm")
+        val time = formatter.format(Calendar.getInstance().time)
+        findViewById<TextView>(R.id.tvRefreshTime).text = time
 
-        binding.idFABSave.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Save clicked..", Toast.LENGTH_SHORT).show()
-        }
+
+        Log.d("myResponseBody", myResponseBody.toString())
     }
 
     private fun getMyData() {
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build()
-            .create(ApiInterface::class.java)
-
-        val retrofitData = retrofitBuilder.getData()
+        val retrofitData = RetrofitInstance.api.getData()
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Log.d("ApiResponse ok: ", responseBody.toString())
-                    binding.testTextView.text = responseBody.main.temp.toString()
-                    binding.viewPager.findViewById<TextView>(R.id.tvCityName).text = responseBody.name
-//                    binding.viewPager.findViewById<TextView>(R.id.tvCoords).text = responseBody.coord.toString()
-                    binding.viewPager.findViewById<TextView>(R.id.tvWeatherDescription).text = responseBody.weather.description
-                    binding.viewPager.findViewById<TextView>(R.id.tvPressure).text = responseBody.main.pressure.toString()
-                    binding.viewPager.findViewById<TextView>(R.id.tvTemp).text = responseBody.main.temp.toString()
-                }
+                myResponseBody = response.body()!!
+                updateViews()
             }
 
             override fun onFailure(call: Call<WeatherData?>, t: Throwable) {
-                Log.d("ApiResponse error: ", "Error")
+                Log.d("MainActivity", "Error")
             }
         })
     }
