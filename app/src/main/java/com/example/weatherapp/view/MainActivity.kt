@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        prepareViewPager()
+        viewPagerInit()
         buttonsInit()
         getWeatherData("Łódź") // default location
     }
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun prepareViewPager() {
+    private fun viewPagerInit() {
         val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             when (position) {
                 0 -> tab.text = "Basic"
-                1 -> tab.text = "Advanced"
+                1 -> tab.text = "Additional"
                 2 -> tab.text = "Forecast"
             }
         }.attach()
