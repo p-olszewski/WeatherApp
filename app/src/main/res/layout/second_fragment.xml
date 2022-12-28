@@ -10,75 +10,105 @@
         android:id="@+id/tvWind"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:gravity="center"
         android:text="Wind:"
-        android:textSize="42sp"
+        android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivWind"
+        android:src="@drawable/_729377_forecast_windy_weather_storm_climate"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvWind" />
 
     <TextView
         android:id="@+id/tvWindDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Wind details"
-        android:textSize="26sp"
+        android:text="15kmh, 270deg"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWind" />
+        app:layout_constraintTop_toBottomOf="@+id/ivWind" />
 
     <TextView
         android:id="@+id/tvHumidity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:text="Humidity:"
-        android:textSize="42sp"
+        android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvWindDetails" />
+
+    <ImageView
+        android:id="@+id/ivHumidity"
+        android:src="@drawable/_729383_forecast_rain_cloud_weather_raining"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvHumidity" />
 
     <TextView
         android:id="@+id/tvHumidityDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Humidity details"
-        android:textSize="26sp"
+        android:text="91%"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHumidity" />
+        app:layout_constraintTop_toBottomOf="@+id/ivHumidity" />
 
 
     <TextView
         android:id="@+id/tvVisibility"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:text="Visibility:"
-        android:textSize="42sp"
+        android:textSize="26sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvHumidityDetails" />
+
+    <ImageView
+        android:id="@+id/ivVisibility"
+        android:src="@drawable/_729388_foggy_forecast_weather_fog"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvVisibility" />
 
     <TextView
         android:id="@+id/tvVisibilityDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Visibility details"
-        android:textSize="26sp"
+        android:text="10000m"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvVisibility" />
+        app:layout_constraintTop_toBottomOf="@+id/ivVisibility" />
 </androidx.constraintlayout.widget.ConstraintLayout>
