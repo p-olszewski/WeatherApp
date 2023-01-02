@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         viewPagerInit()
         buttonsInit()
         getWeatherData("Łódź") // default location
-//        Log.d("MainActivity", "Response body 2: $apiResponseBody")
 
     }
 
