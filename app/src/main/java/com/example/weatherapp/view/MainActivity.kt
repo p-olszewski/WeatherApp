@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity() {
         viewPagerInit()
         buttonsInit()
         getWeatherData("Łódź") // default location
+//        Log.d("MainActivity", "Response body 2: $apiResponseBody")
+
     }
 
     private fun buttonsInit() {
@@ -135,6 +137,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
                 apiResponseBody = response.body()!!
                 updateViews()
+                Log.d("MainActivity", "Response body 1: $apiResponseBody")
             }
 
             override fun onFailure(call: Call<WeatherData?>, t: Throwable) {
