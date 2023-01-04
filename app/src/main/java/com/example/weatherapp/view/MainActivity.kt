@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-val TAG = "MainActivity"
+const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     lateinit var apiResponseBody: WeatherData
