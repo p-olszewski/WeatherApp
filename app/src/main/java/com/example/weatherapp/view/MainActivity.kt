@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
+val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     lateinit var apiResponseBody: WeatherData
@@ -37,7 +38,6 @@ class MainActivity : AppCompatActivity() {
         viewPagerInit()
         buttonsInit()
         getWeatherData("Łódź") // default location
-
     }
 
     private fun buttonsInit() {
@@ -95,10 +95,14 @@ class MainActivity : AppCompatActivity() {
                 2 -> tab.text = "Forecast"
             }
         }.attach()
+
+        viewPager.offscreenPageLimit = 2
+        Log.d(TAG, "offScreenLimit: " + viewPager.offscreenPageLimit)
     }
 
     @SuppressLint("SimpleDateFormat")
     private fun updateViews() {
+        // fragment 1
         findViewById<TextView>(R.id.tvCityName).text = apiResponseBody.name
         findViewById<TextView>(R.id.tvCoords).text = buildString {
             append(apiResponseBody.coord.lat.toString())
@@ -126,6 +130,11 @@ class MainActivity : AppCompatActivity() {
             "Mist", "Fog", "Haze" -> ivWeatherImage.setImageResource(R.drawable._729389_weather_foggy_cloudy_forecast_cloud)
             else -> ivWeatherImage.setImageResource(R.drawable._729392_cloudy_sunny_forecast_sun_cloud_weather)
         }
+
+        // fragment 2
+        findViewById<TextView>(R.id.tvWindDetails).text = apiResponseBody.wind.speed.toString()
+        findViewById<TextView>(R.id.tvHumidityDetails).text = apiResponseBody.main.humidity.toString()
+        findViewById<TextView>(R.id.tvVisibilityDetails).text = apiResponseBody.visibility.toString()
 
         Log.d("myResponseBody", apiResponseBody.toString())
     }
