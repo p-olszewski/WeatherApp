@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         viewPagerInit()
         buttonsInit()
-        getWeatherData("Łódź") // default location
+        getCurrentWeatherData("Łódź") // default location
     }
 
     private fun buttonsInit() {
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         refreshFAB.setOnClickListener {
             Toast.makeText(this@MainActivity, "Syncing data...", Toast.LENGTH_SHORT).show()
             // API
-            getWeatherData(apiResponseBody.name)
+            getCurrentWeatherData(apiResponseBody.name)
         }
 
         saveFAB.setOnClickListener {
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonSearch.setOnClickListener {
             val inputField = findViewById<TextInputEditText>(R.id.cityInput)
-            getWeatherData(inputField.text.toString())
+            getCurrentWeatherData(inputField.text.toString())
             // exit input field and hide keyboard
             inputField.clearFocus()
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -150,8 +150,8 @@ class MainActivity : AppCompatActivity() {
         Log.d("myResponseBody", apiResponseBody.toString())
     }
 
-    private fun getWeatherData(city: String) {
-        val retrofitData = RetrofitInstance.api.getData(city)
+    private fun getCurrentWeatherData(city: String) {
+        val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
                 apiResponseBody = response.body()!!
