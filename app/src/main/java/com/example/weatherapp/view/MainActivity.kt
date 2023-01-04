@@ -132,9 +132,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         // fragment 2
-        findViewById<TextView>(R.id.tvWindDetails).text = apiResponseBody.wind.speed.toString()
-        findViewById<TextView>(R.id.tvHumidityDetails).text = apiResponseBody.main.humidity.toString()
-        findViewById<TextView>(R.id.tvVisibilityDetails).text = apiResponseBody.visibility.toString()
+        findViewById<TextView>(R.id.tvWindDetails).text = buildString {
+            append(apiResponseBody.wind.speed.roundToInt().toString())
+            append("m/s, ")
+            append(apiResponseBody.wind.deg.toString())
+            append("deg")
+        }
+        findViewById<TextView>(R.id.tvHumidityDetails).text = buildString {
+            append(apiResponseBody.main.humidity.toString())
+            append("%")
+        }
+        findViewById<TextView>(R.id.tvVisibilityDetails).text = buildString {
+            append(apiResponseBody.visibility.toString())
+            append("m")
+        }
 
         Log.d("myResponseBody", apiResponseBody.toString())
     }
