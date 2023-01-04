@@ -105,9 +105,9 @@ class MainActivity : AppCompatActivity() {
         // fragment 1
         findViewById<TextView>(R.id.tvCityName).text = apiResponseBody.name
         findViewById<TextView>(R.id.tvCoords).text = buildString {
-            append(apiResponseBody.coord.lat.toString())
+            append(apiResponseBody.coord.lat)
             append(", ")
-            append(apiResponseBody.coord.lon.toString())
+            append(apiResponseBody.coord.lon)
         }
         findViewById<TextView>(R.id.tvTemp).text = buildString {
             append(apiResponseBody.main.temp.roundToInt())
@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
         }
         findViewById<TextView>(R.id.tvWeatherDescription).text = apiResponseBody.weather[0].description
         findViewById<TextView>(R.id.tvPressure).text = buildString {
-            append(apiResponseBody.main.pressure.toString())
+            append(apiResponseBody.main.pressure)
             append(" hPa")
         }
         findViewById<TextView>(R.id.tvRefreshTime).text = SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
@@ -133,17 +133,17 @@ class MainActivity : AppCompatActivity() {
 
         // fragment 2
         findViewById<TextView>(R.id.tvWindDetails).text = buildString {
-            append(apiResponseBody.wind.speed.roundToInt().toString())
+            append(apiResponseBody.wind.speed.roundToInt())
             append("m/s, ")
-            append(apiResponseBody.wind.deg.toString())
+            append(apiResponseBody.wind.deg)
             append("deg")
         }
         findViewById<TextView>(R.id.tvHumidityDetails).text = buildString {
-            append(apiResponseBody.main.humidity.toString())
+            append(apiResponseBody.main.humidity)
             append("%")
         }
         findViewById<TextView>(R.id.tvVisibilityDetails).text = buildString {
-            append(apiResponseBody.visibility.toString())
+            append(apiResponseBody.visibility)
             append("m")
         }
 
