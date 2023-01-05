@@ -211,6 +211,7 @@ class MainActivity : AppCompatActivity() {
                         "Location permission not granted...",
                         Toast.LENGTH_SHORT
                     ).show()
+                    getCurrentWeatherData(cityName)
                 }
             }
     }
