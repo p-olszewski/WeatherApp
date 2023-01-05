@@ -26,10 +26,19 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 
 const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
+    private lateinit var locationManager: LocationManager
     lateinit var apiResponseBody: WeatherData
 
     override fun onCreate(savedInstanceState: Bundle?) {
