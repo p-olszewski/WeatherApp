@@ -31,9 +31,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat.getCurrentLocation
 
 const val TAG = "MainActivity"
 
@@ -42,26 +40,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     lateinit var apiResponseBody: WeatherData
+    private var cityName: String = "Łódź" // default location
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewPagerInit()
-        buttonsInit()
-        getCurrentWeatherData("Łódź") // default location
-        getMyLocation()
+        uiInit()
+        permissionInit()
+        getCurrentWeatherData(cityName)
     }
 
-    private fun getMyLocation() {
-        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-                isGranted: Boolean ->
-            if (isGranted) {
-                Log.d("PERMISSION", "Permission granted: ")
-            } else {
-                Log.d("PERMISSION", "Permission denied: ")
-            }
-        }
-        requestPermission()
+    private fun uiInit() {
+        viewPagerInit()
+        buttonsInit()
     }
 
     private fun buttonsInit() {
@@ -101,7 +92,8 @@ class MainActivity : AppCompatActivity() {
             getCurrentWeatherData(inputField.text.toString())
             // exit input field and hide keyboard
             inputField.clearFocus()
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(inputField.windowToken, 0)
             inputField.clearComposingText()
         }
@@ -137,12 +129,14 @@ class MainActivity : AppCompatActivity() {
             append(apiResponseBody.main.temp.roundToInt())
             append("°C")
         }
-        findViewById<TextView>(R.id.tvWeatherDescription).text = apiResponseBody.weather[0].description
+        findViewById<TextView>(R.id.tvWeatherDescription).text =
+            apiResponseBody.weather[0].description
         findViewById<TextView>(R.id.tvPressure).text = buildString {
             append(apiResponseBody.main.pressure)
             append(" hPa")
         }
-        findViewById<TextView>(R.id.tvRefreshTime).text = SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
+        findViewById<TextView>(R.id.tvRefreshTime).text =
+            SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
         val ivWeatherImage = findViewById<ImageView>(R.id.ivWeatherImage)
         when (apiResponseBody.weather[0].main) {
             "Thunderstorm" -> ivWeatherImage.setImageResource(R.drawable._729387_weather_cloudy_lightning_cloud_forecast)
@@ -175,6 +169,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCurrentWeatherData(city: String) {
+        Log.i(TAG, "city param: $$city")
         val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
@@ -189,18 +184,46 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun requestPermission() {
-        when {
-            ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
-                Log.d("PERMISSION", "requestPermission: Granted")
+    private fun permissionInit() {
+        locationPermissionInit()
+        checkLocationPermission()
+    }
+
+    private fun locationPermissionInit() {
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                if (isGranted) {
+                    Log.i(TAG, "PERMISSION (callback): GRANTED")
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Location permission granted!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    cityName = "Pabianice"
+                    getCurrentWeatherData(cityName)
+                } else {
+                    Log.i(TAG, "PERMISSION (callback): NOT GRANTED")
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Location permission not granted...",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
-            ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION) -> {
-                Log.d("PERMISSION", "requestPermission: Rationale")
-            }
-            else -> {
-                requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
-                Log.d("PERMISSION", "requestPermission: should show the window")
-            }
+    }
+
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            cityName = "Pabianice"
+            Log.i(TAG, "PERMISSION: GRANTED")
+        } else {
+            requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
+            Log.i(TAG, "PERMISSION: Showed permission window")
         }
     }
+
 }
