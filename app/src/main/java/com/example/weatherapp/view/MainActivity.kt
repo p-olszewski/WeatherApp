@@ -1,5 +1,6 @@
 package com.example.weatherapp.view
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
@@ -28,9 +29,13 @@ import java.util.*
 import kotlin.math.roundToInt
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 const val TAG = "MainActivity"
@@ -38,6 +43,9 @@ const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var locationManager: LocationManager
+    private lateinit var locationByGps: Location
+    private lateinit var locationByNetwork: Location
+    private var currentLocation: Location? = null
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     lateinit var apiResponseBody: WeatherData
     private var cityName: String = "Łódź" // default location
@@ -169,7 +177,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCurrentWeatherData(city: String) {
-        Log.i(TAG, "city param: $$city")
+        Log.i(TAG, "city param: $city")
         val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
@@ -199,7 +207,7 @@ class MainActivity : AppCompatActivity() {
                         "Location permission granted!",
                         Toast.LENGTH_SHORT
                     ).show()
-                    cityName = "Pabianice"
+                    findMyLocation()
                     getCurrentWeatherData(cityName)
                 } else {
                     Log.i(TAG, "PERMISSION (callback): NOT GRANTED")
@@ -218,11 +226,67 @@ class MainActivity : AppCompatActivity() {
                 ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            cityName = "Pabianice"
             Log.i(TAG, "PERMISSION: GRANTED")
+            findMyLocation()
         } else {
             requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
             Log.i(TAG, "PERMISSION: Showed permission window")
+        }
+    }
+
+    private fun findMyLocation() {
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+        val networkLocationListener: LocationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                locationByNetwork = location
+            }
+
+            override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+            override fun onProviderEnabled(provider: String) {}
+            override fun onProviderDisabled(provider: String) {}
+        }
+
+        if (hasNetwork) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+            locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                5000,
+                0F,
+                networkLocationListener
+            )
+        }
+
+        val lastKnownLocationByNetwork =
+            locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        lastKnownLocationByNetwork?.let {
+            locationByNetwork = lastKnownLocationByNetwork
+        }
+
+        currentLocation = locationByNetwork
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addressList =
+            geocoder.getFromLocation(currentLocation!!.latitude, currentLocation!!.longitude, 1)
+        if (addressList != null) {
+            if (addressList.size > 0) {
+                val locatedCity = addressList[0].locality
+                Toast.makeText(
+                    this@MainActivity,
+                    "Located city: $locatedCity",
+                    Toast.LENGTH_SHORT
+                ).show()
+                getCurrentWeatherData(locatedCity)
+            }
         }
     }
 
