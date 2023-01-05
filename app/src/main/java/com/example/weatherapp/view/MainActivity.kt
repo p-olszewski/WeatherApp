@@ -40,11 +40,9 @@ import androidx.core.content.ContextCompat
 
 const val TAG = "MainActivity"
 
+//TODO Debug functions call queue, "Łódź" overwriting current location
 class MainActivity : AppCompatActivity() {
-    private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var locationManager: LocationManager
-    private lateinit var locationByGps: Location
-    private lateinit var locationByNetwork: Location
     private var currentLocation: Location? = null
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     lateinit var apiResponseBody: WeatherData
@@ -238,15 +236,9 @@ class MainActivity : AppCompatActivity() {
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-        val networkLocationListener: LocationListener = object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                locationByNetwork = location
-            }
-
-            override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-            override fun onProviderEnabled(provider: String) {}
-            override fun onProviderDisabled(provider: String) {}
-        }
+        val networkLocationListener: LocationListener =
+            LocationListener { location ->
+                currentLocation = location }
 
         if (hasNetwork) {
             if (ActivityCompat.checkSelfPermission(
@@ -270,10 +262,9 @@ class MainActivity : AppCompatActivity() {
         val lastKnownLocationByNetwork =
             locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
         lastKnownLocationByNetwork?.let {
-            locationByNetwork = lastKnownLocationByNetwork
+            currentLocation = lastKnownLocationByNetwork
         }
 
-        currentLocation = locationByNetwork
         val geocoder = Geocoder(this, Locale.getDefault())
         val addressList =
             geocoder.getFromLocation(currentLocation!!.latitude, currentLocation!!.longitude, 1)
