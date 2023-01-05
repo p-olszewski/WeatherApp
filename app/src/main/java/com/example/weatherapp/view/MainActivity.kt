@@ -26,19 +26,20 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
-import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
     private lateinit var locationManager: LocationManager
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     lateinit var apiResponseBody: WeatherData
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +48,16 @@ class MainActivity : AppCompatActivity() {
         viewPagerInit()
         buttonsInit()
         getCurrentWeatherData("Łódź") // default location
+
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            isGranted: Boolean ->
+            if (isGranted) {
+                Log.d(TAG, "Permission granted: ")
+            } else {
+                Log.d(TAG, "Permission denied: ")
+            }
+        }
+        requestPermission()
     }
 
     private fun buttonsInit() {
@@ -172,5 +183,20 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "Error")
             }
         })
+    }
+
+    private fun requestPermission() {
+        when {
+            ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
+                Log.d(TAG, "requestPermission: Granted")
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION) -> {
+                Log.d(TAG, "requestPermission: Rationale")
+            }
+            else -> {
+                requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
+                Log.d(TAG, "requestPermission: should show the window")
+            }
+        }
     }
 }
