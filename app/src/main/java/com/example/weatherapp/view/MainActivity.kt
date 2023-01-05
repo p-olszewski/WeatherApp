@@ -189,11 +189,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun permissionInit() {
-        locationPermissionInit()
-        checkLocationPermission()
-    }
-
-    private fun locationPermissionInit() {
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
@@ -208,15 +203,13 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "PERMISSION (callback): NOT GRANTED")
                     Toast.makeText(
                         this@MainActivity,
-                        "Location permission not granted...",
+                        "Location permission not granted. Default location: $cityName",
                         Toast.LENGTH_SHORT
                     ).show()
                     getCurrentWeatherData(cityName)
                 }
             }
-    }
 
-    private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(
                 this,
                 ACCESS_COARSE_LOCATION
@@ -263,6 +256,7 @@ class MainActivity : AppCompatActivity() {
             currentLocation = lastKnownLocationByNetwork
         }
 
+        // decode city name
         val geocoder = Geocoder(this, Locale.getDefault())
         val addressList =
             geocoder.getFromLocation(currentLocation!!.latitude, currentLocation!!.longitude, 1)
