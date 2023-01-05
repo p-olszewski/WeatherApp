@@ -40,7 +40,6 @@ import androidx.core.content.ContextCompat
 
 const val TAG = "MainActivity"
 
-//TODO Debug functions call queue, "Łódź" overwriting current location
 class MainActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private var currentLocation: Location? = null
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         uiInit()
         permissionInit()
-        getCurrentWeatherData(cityName)
     }
 
     private fun uiInit() {
@@ -206,7 +204,6 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     findMyLocation()
-                    getCurrentWeatherData(cityName)
                 } else {
                     Log.i(TAG, "PERMISSION (callback): NOT GRANTED")
                     Toast.makeText(
@@ -236,7 +233,7 @@ class MainActivity : AppCompatActivity() {
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
-        val networkLocationListener: LocationListener =
+        val networkLocationListener =
             LocationListener { location ->
                 currentLocation = location }
 
