@@ -33,6 +33,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat.getCurrentLocation
 
 const val TAG = "MainActivity"
 
@@ -48,13 +49,16 @@ class MainActivity : AppCompatActivity() {
         viewPagerInit()
         buttonsInit()
         getCurrentWeatherData("Łódź") // default location
+        getMyLocation()
+    }
 
+    private fun getMyLocation() {
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            isGranted: Boolean ->
+                isGranted: Boolean ->
             if (isGranted) {
-                Log.d(TAG, "Permission granted: ")
+                Log.d("PERMISSION", "Permission granted: ")
             } else {
-                Log.d(TAG, "Permission denied: ")
+                Log.d("PERMISSION", "Permission denied: ")
             }
         }
         requestPermission()
@@ -188,14 +192,14 @@ class MainActivity : AppCompatActivity() {
     private fun requestPermission() {
         when {
             ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED -> {
-                Log.d(TAG, "requestPermission: Granted")
+                Log.d("PERMISSION", "requestPermission: Granted")
             }
             ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_COARSE_LOCATION) -> {
-                Log.d(TAG, "requestPermission: Rationale")
+                Log.d("PERMISSION", "requestPermission: Rationale")
             }
             else -> {
                 requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
-                Log.d(TAG, "requestPermission: should show the window")
+                Log.d("PERMISSION", "requestPermission: should show the window")
             }
         }
     }
