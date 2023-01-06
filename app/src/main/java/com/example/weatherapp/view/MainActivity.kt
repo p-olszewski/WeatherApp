@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
         refreshFAB.setOnClickListener {
             getCurrentWeatherData(apiResponseBody.name)
+            Toast.makeText(this@MainActivity, "Synchronized!", Toast.LENGTH_SHORT).show()
         }
 
         saveFAB.setOnClickListener {
@@ -135,8 +136,9 @@ class MainActivity : AppCompatActivity() {
             append(apiResponseBody.main.temp.roundToInt())
             append("°C")
         }
-        findViewById<TextView>(R.id.tvWeatherDescription).text =
-            apiResponseBody.weather[0].description
+        val weatherDesc = apiResponseBody.weather[0].description
+        val capitalizedDesc = weatherDesc[0].uppercaseChar() + weatherDesc.substring(1)
+        findViewById<TextView>(R.id.tvWeatherDescription).text = capitalizedDesc
         findViewById<TextView>(R.id.tvPressure).text = buildString {
             append(apiResponseBody.main.pressure)
             append(" hPa")
@@ -187,7 +189,6 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "Error")
             }
         })
-        Toast.makeText(this@MainActivity, "Synchronized.", Toast.LENGTH_SHORT).show()
     }
 
     private fun permissionInit() {
