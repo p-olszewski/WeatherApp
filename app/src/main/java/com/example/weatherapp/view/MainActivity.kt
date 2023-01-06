@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity() {
 
         refreshFAB.setOnClickListener {
             getCurrentWeatherData(apiResponseBody.name)
-            Toast.makeText(this@MainActivity, "Data synchronized", Toast.LENGTH_SHORT).show()
         }
 
         saveFAB.setOnClickListener {
@@ -188,6 +187,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "Error")
             }
         })
+        Toast.makeText(this@MainActivity, "Synchronized.", Toast.LENGTH_SHORT).show()
     }
 
     private fun permissionInit() {
