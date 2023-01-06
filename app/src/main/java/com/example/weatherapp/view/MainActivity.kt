@@ -86,9 +86,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshFAB.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Syncing data...", Toast.LENGTH_SHORT).show()
-            // API
             getCurrentWeatherData(apiResponseBody.name)
+            Toast.makeText(this@MainActivity, "Data synchronized", Toast.LENGTH_SHORT).show()
         }
 
         saveFAB.setOnClickListener {
@@ -196,15 +195,10 @@ class MainActivity : AppCompatActivity() {
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
-                    Log.i(TAG, "PERMISSION (callback): GRANTED")
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Location permission granted!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.i(TAG, "Location permission granted!")
                     findMyLocation()
                 } else {
-                    Log.i(TAG, "PERMISSION (callback): NOT GRANTED")
+                    Log.i(TAG, "Location permission not granted!")
                     Toast.makeText(
                         this@MainActivity,
                         "Location permission not granted. Default location: $cityName",
@@ -219,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                 ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            Log.i(TAG, "PERMISSION: GRANTED")
+            Log.i(TAG, "Location permission granted!")
             findMyLocation()
         } else {
             requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
@@ -233,7 +227,8 @@ class MainActivity : AppCompatActivity() {
 
         val networkLocationListener =
             LocationListener { location ->
-                currentLocation = location }
+                currentLocation = location
+            }
 
         if (hasNetwork) {
             if (ActivityCompat.checkSelfPermission(
@@ -252,6 +247,13 @@ class MainActivity : AppCompatActivity() {
                 0F,
                 networkLocationListener
             )
+        } else {
+            Toast.makeText(
+                this@MainActivity,
+                "Network provider error",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
         }
 
         val lastKnownLocationByNetwork =
@@ -267,11 +269,7 @@ class MainActivity : AppCompatActivity() {
         if (addressList != null) {
             if (addressList.size > 0) {
                 val locatedCity = addressList[0].locality
-                Toast.makeText(
-                    this@MainActivity,
-                    "Located city: $locatedCity",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Log.i(TAG, "Located city: $locatedCity")
                 getCurrentWeatherData(locatedCity)
             }
         }
