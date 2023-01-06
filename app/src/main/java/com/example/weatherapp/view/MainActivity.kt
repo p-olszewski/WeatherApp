@@ -176,7 +176,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCurrentWeatherData(city: String) {
-        Log.i(TAG, "city param: $city")
         val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
         retrofitData.enqueue(object : Callback<WeatherData?> {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
@@ -195,10 +194,10 @@ class MainActivity : AppCompatActivity() {
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
-                    Log.i(TAG, "Location permission granted!")
+                    Log.i(TAG, "PERMISSION: Location permission granted")
                     findMyLocation()
                 } else {
-                    Log.i(TAG, "Location permission not granted!")
+                    Log.i(TAG, "PERMISSION: Location permission not granted")
                     Toast.makeText(
                         this@MainActivity,
                         "Location permission not granted. Default location: $cityName",
@@ -213,7 +212,7 @@ class MainActivity : AppCompatActivity() {
                 ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            Log.i(TAG, "Location permission granted!")
+            Log.i(TAG, "PERMISSION: Location permission granted")
             findMyLocation()
         } else {
             requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
