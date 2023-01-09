@@ -38,6 +38,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
 
 const val TAG = "MainActivity"
 
@@ -185,6 +186,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
                 apiResponseBody = response.body()!!
                 updateViews()
+                sharedPref.edit().putString("api", Gson().toJson(apiResponseBody)).apply() // save to file
                 Log.d("MainActivity", "Response body 1: $apiResponseBody")
             }
 
