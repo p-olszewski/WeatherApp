@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -46,11 +47,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     lateinit var apiResponseBody: WeatherData
     private var cityName: String = "Łódź" // default location
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         runWeatherApp()
+        sharedPref = getPreferences(Context.MODE_PRIVATE)
     }
 
     private fun runWeatherApp() {
