@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         saveFAB.setOnClickListener {
-            readFromFile()
+            saveToFile()
         }
 
         buttonSearch.setOnClickListener {
@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
                 apiResponseBody = response.body()!!
                 updateViews()
-                sharedPref.edit().putString("api", Gson().toJson(apiResponseBody)).apply() // save to file
+                saveToFile()
                 Log.d("MainActivity", "Response body 1: $apiResponseBody")
             }
 
@@ -196,6 +196,10 @@ class MainActivity : AppCompatActivity() {
                 Log.d("MainActivity", "Error")
             }
         })
+    }
+
+    private fun saveToFile() {
+        sharedPref.edit().putString("api", Gson().toJson(apiResponseBody)).apply()
     }
 
     private fun permissionInit() {
