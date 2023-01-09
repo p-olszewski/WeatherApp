@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         saveFAB.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Save clicked..", Toast.LENGTH_SHORT).show()
+            readFromFile()
         }
 
         buttonSearch.setOnClickListener {
@@ -205,28 +205,7 @@ class MainActivity : AppCompatActivity() {
                     Log.i(TAG, "PERMISSION: Location permission granted")
                     findMyLocation()
                 } else {
-                    Log.i(TAG, "PERMISSION: Location permission not granted")
-                    // read from file
-                    val data = sharedPref.getString("api", null)
-                    // file does not exist
-                    if (data == null) {
-                        getCurrentWeatherData(cityName)
-                        Toast.makeText(
-                            this@MainActivity,
-                            "No file saved. Default city ($cityName) is being set.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    // file exist
-                    } else {
-                        val json = JSONObject(data)
-                        val lastCity = json.getString("name")
-                        getCurrentWeatherData(lastCity)
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Location permission not granted. Last location: $lastCity is being set.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+                    readFromFile()
                 }
             }
 
@@ -240,6 +219,31 @@ class MainActivity : AppCompatActivity() {
         } else {
             requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
             Log.i(TAG, "PERMISSION: Showed permission window")
+        }
+    }
+
+    private fun readFromFile() {
+        Log.i(TAG, "PERMISSION: Location permission not granted")
+        // read from file
+        val data = sharedPref.getString("api", null)
+        // file does not exist
+        if (data == null) {
+            getCurrentWeatherData(cityName)
+            Toast.makeText(
+                this@MainActivity,
+                "No file saved. Default city ($cityName) is being set.",
+                Toast.LENGTH_LONG
+            ).show()
+            // file exist
+        } else {
+            val json = JSONObject(data)
+            val lastCity = json.getString("name")
+            getCurrentWeatherData(lastCity)
+            Toast.makeText(
+                this@MainActivity,
+                "Last location: $lastCity is being set.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
