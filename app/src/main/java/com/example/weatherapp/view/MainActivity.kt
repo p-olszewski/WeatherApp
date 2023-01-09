@@ -39,6 +39,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
+import com.google.gson.JsonObject
+import org.json.JSONObject
 
 const val TAG = "MainActivity"
 
@@ -204,12 +206,24 @@ class MainActivity : AppCompatActivity() {
                     findMyLocation()
                 } else {
                     Log.i(TAG, "PERMISSION: Location permission not granted")
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Location permission not granted. Default location: $cityName",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    getCurrentWeatherData(cityName)
+                    val data = sharedPref.getString("api", null) // read from file
+                    if (data == null) {
+                        getCurrentWeatherData(cityName)
+                        Toast.makeText(
+                            this@MainActivity,
+                            "No file saved. Default city ($cityName) is being set.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        val json = JSONObject(data)
+                        val lastCity = json.getString("name")
+                        getCurrentWeatherData(lastCity)
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Location permission not granted. Set last location: $lastCity.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
 
