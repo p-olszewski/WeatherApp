@@ -206,22 +206,25 @@ class MainActivity : AppCompatActivity() {
                     findMyLocation()
                 } else {
                     Log.i(TAG, "PERMISSION: Location permission not granted")
-                    val data = sharedPref.getString("api", null) // read from file
+                    // read from file
+                    val data = sharedPref.getString("api", null)
+                    // file does not exist
                     if (data == null) {
                         getCurrentWeatherData(cityName)
                         Toast.makeText(
                             this@MainActivity,
                             "No file saved. Default city ($cityName) is being set.",
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_LONG
                         ).show()
+                    // file exist
                     } else {
                         val json = JSONObject(data)
                         val lastCity = json.getString("name")
                         getCurrentWeatherData(lastCity)
                         Toast.makeText(
                             this@MainActivity,
-                            "Location permission not granted. Set last location: $lastCity.",
-                            Toast.LENGTH_SHORT
+                            "Location permission not granted. Last location: $lastCity is being set.",
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 }
