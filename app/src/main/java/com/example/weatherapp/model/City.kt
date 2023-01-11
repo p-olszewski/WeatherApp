@@ -1,7 +1,7 @@
 package com.example.weatherapp.model
 
 data class City(
-    val coord: CoordX,
+    val coord: Coord,
     val country: String,
     val id: Int,
     val name: String,
