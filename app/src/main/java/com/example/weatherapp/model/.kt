@@ -1,14 +1,14 @@
 package com.example.weatherapp.model
 
-data class (
-    val clouds: CloudsX,
+data class WeatherForecastData(
+    val clouds: Clouds,
     val dt: Int,
     val dt_txt: String,
-    val main: MainX,
+    val main: MainForecast,
     val pop: Double,
     val rain: Rain,
-    val sys: SysX,
+    val sys: SysForecast,
     val visibility: Int,
-    val weather: List<WeatherX>,
-    val wind: WindX
+    val weather: List<Weather>,
+    val wind: WindForecast
 )

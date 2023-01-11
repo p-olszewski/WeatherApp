@@ -1,6 +1,6 @@
 package com.example.weatherapp.model
 
-data class MainX(
+data class MainForecast(
     val feels_like: Double,
     val grnd_level: Int,
     val humidity: Int,
