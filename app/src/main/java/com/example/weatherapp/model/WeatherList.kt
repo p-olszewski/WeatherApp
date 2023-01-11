@@ -1,6 +1,6 @@
 package com.example.weatherapp.model
 
-data class WeatherForecastData(
+data class WeatherList(
     val clouds: Clouds,
     val dt: Int,
     val dt_txt: String,

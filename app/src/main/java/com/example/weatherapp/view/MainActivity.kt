@@ -14,7 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
-import com.example.weatherapp.model.WeatherData
+import com.example.weatherapp.model.WeatherCurrentModel
 import com.example.weatherapp.service.RetrofitInstance
 import com.example.weatherapp.service.ViewPagerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -39,7 +39,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import org.json.JSONObject
 
 const val TAG = "MainActivity"
@@ -48,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private var currentLocation: Location? = null
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    lateinit var apiResponseBody: WeatherData
+    lateinit var apiResponseBody: WeatherCurrentModel
     private var cityName: String = "Łódź" // default location
     private lateinit var sharedPref: SharedPreferences
 
@@ -184,15 +183,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun getCurrentWeatherData(city: String) {
         val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
-        retrofitData.enqueue(object : Callback<WeatherData?> {
-            override fun onResponse(call: Call<WeatherData?>, response: Response<WeatherData?>) {
+        retrofitData.enqueue(object : Callback<WeatherCurrentModel?> {
+            override fun onResponse(call: Call<WeatherCurrentModel?>, response: Response<WeatherCurrentModel?>) {
                 apiResponseBody = response.body()!!
                 updateViews()
                 saveToFile()
                 Log.d("MainActivity", "Response body 1: $apiResponseBody")
             }
 
-            override fun onFailure(call: Call<WeatherData?>, t: Throwable) {
+            override fun onFailure(call: Call<WeatherCurrentModel?>, t: Throwable) {
                 Log.d("MainActivity", "Error")
             }
         })
