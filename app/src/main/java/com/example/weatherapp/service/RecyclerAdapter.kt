@@ -2,11 +2,13 @@ package com.example.weatherapp.service
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ForecastWeatherRowBinding
 import com.example.weatherapp.model.WeatherList
+import kotlin.math.roundToInt
 
 class RecyclerAdapter(private val data: List<WeatherList>) : RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
     inner class MyViewHolder(binding: ForecastWeatherRowBinding): ViewHolder(binding.root) {
@@ -24,8 +26,13 @@ class RecyclerAdapter(private val data: List<WeatherList>) : RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.tvDate.text = data[position].dt_txt
-        holder.tvWeatherDescription.text = data[position].weather[0].description
-        holder.tvTemp.text = data[position].main.temp.toString()
+        val weatherDesc = data[position].weather[0].description
+        val capitalizedDesc = weatherDesc[0].uppercaseChar() + weatherDesc.substring(1)
+        holder.tvWeatherDescription.text = capitalizedDesc
+        holder.tvTemp.text = buildString {
+            append(data[position].main.temp.roundToInt())
+            append("°C")
+        }
         when (data[position].weather[0].main) {
             "Thunderstorm" -> holder.ivWeatherImage.setImageResource(R.drawable._729387_weather_cloudy_lightning_cloud_forecast)
             "Clouds" -> holder.ivWeatherImage.setImageResource(R.drawable._729391_cloud_weather_forecast_rain_cloudy)
