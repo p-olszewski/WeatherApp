@@ -200,10 +200,15 @@ class MainActivity : AppCompatActivity() {
         val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
         retrofitData.enqueue(object : Callback<WeatherCurrentModel?> {
             override fun onResponse(call: Call<WeatherCurrentModel?>, response: Response<WeatherCurrentModel?>) {
-                currentApiResponseBody = response.body()!!
-                updateViews()
-                saveToFile()
-                Log.d("MainActivity", "Response body 1 (current): $currentApiResponseBody")
+                if(response.isSuccessful) {
+                    currentApiResponseBody = response.body()!!
+                    updateViews()
+                    saveToFile()
+                    Log.d("MainActivity", "Response body 1 (current): $currentApiResponseBody")
+                } else {
+                    Log.d("MainActivity", "Response (current) error: " + response.code().toString())
+                    Toast.makeText(this@MainActivity, "Incorrect city input!", Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onFailure(call: Call<WeatherCurrentModel?>, t: Throwable) {
@@ -216,10 +221,14 @@ class MainActivity : AppCompatActivity() {
         val retrofitData = RetrofitInstance.api.getForecastWeather(city)
         retrofitData.enqueue(object : Callback<WeatherForecastModel?> {
             override fun onResponse(call: Call<WeatherForecastModel?>, response: Response<WeatherForecastModel?>) {
-                forecastApiResponseBody = response.body()!!
-                updateViews()
-                saveToFile()
-                Log.d("MainActivity", "Response body 2 (forecast): $forecastApiResponseBody")
+                if (response.isSuccessful) {
+                    forecastApiResponseBody = response.body()!!
+                    updateViews()
+                    saveToFile()
+                    Log.d("MainActivity", "Response body 2 (forecast): $forecastApiResponseBody")
+                } else {
+                    Log.d("MainActivity", "Response (forecast) error: " + response.code().toString())
+                }
             }
 
             override fun onFailure(call: Call<WeatherForecastModel?>, t: Throwable) {
