@@ -38,7 +38,10 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.model.WeatherForecastModel
+import com.example.weatherapp.service.RecyclerAdapter
 import com.google.gson.Gson
 import org.json.JSONObject
 
@@ -181,6 +184,11 @@ class MainActivity : AppCompatActivity() {
             append("m")
         }
 
+        // fragment 3
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(baseContext)
+        recyclerView.adapter = forecastApiResponseBody?.let { RecyclerAdapter(it.list) }
+
         Log.d("myResponseBody", currentApiResponseBody.toString())
     }
 
@@ -225,7 +233,7 @@ class MainActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
                     Log.i(TAG, "PERMISSION: Location permission granted")
-                    findMyLocation()
+//                    findMyLocation()
                 } else {
                     readFromFile()
                 }
@@ -237,7 +245,7 @@ class MainActivity : AppCompatActivity() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             Log.i(TAG, "PERMISSION: Location permission granted")
-            findMyLocation()
+//            findMyLocation()
         } else {
             requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
             Log.i(TAG, "PERMISSION: Showed permission window")
@@ -329,5 +337,4 @@ class MainActivity : AppCompatActivity() {
             getForecastWeatherData(city)
         }
     }
-
 }

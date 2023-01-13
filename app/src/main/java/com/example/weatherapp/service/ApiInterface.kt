@@ -11,6 +11,6 @@ interface ApiInterface {
     fun getCurrentWeather(@Query("q") city: String): Call<WeatherCurrentModel>
 
     // https://api.openweathermap.org/data/2.5/forecast?q=Warsaw&cnt=9&appid=2327766b852ee11e6971640e01ded0ef
-    @GET("data/2.5/forecast?&cnt=9&appid=2327766b852ee11e6971640e01ded0ef")
+    @GET("data/2.5/forecast?&appid=2327766b852ee11e6971640e01ded0ef&units=metric")
     fun getForecastWeather(@Query("q") city: String): Call<WeatherForecastModel>
 }
