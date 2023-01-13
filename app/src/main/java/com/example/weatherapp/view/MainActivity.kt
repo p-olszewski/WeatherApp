@@ -59,6 +59,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+    }
+
+    override fun onStart() {
+        super.onStart()
         runWeatherApp()
         sharedPref = getPreferences(Context.MODE_PRIVATE)
     }
@@ -233,7 +237,7 @@ class MainActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
                     Log.i(TAG, "PERMISSION: Location permission granted")
-//                    findMyLocation()
+                    findMyLocation()
                 } else {
                     readFromFile()
                 }
@@ -245,7 +249,7 @@ class MainActivity : AppCompatActivity() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             Log.i(TAG, "PERMISSION: Location permission granted")
-//            findMyLocation()
+            findMyLocation()
         } else {
             requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
             Log.i(TAG, "PERMISSION: Showed permission window")
