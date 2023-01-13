@@ -38,6 +38,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.weatherapp.model.WeatherForecastModel
 import com.google.gson.Gson
 import org.json.JSONObject
 
@@ -47,7 +48,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private var currentLocation: Location? = null
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    lateinit var apiResponseBody: WeatherCurrentModel
+    lateinit var currentApiResponseBody: WeatherCurrentModel
+    lateinit var forecastApiResponseBody: WeatherForecastModel
     private var cityName: String = "Łódź" // default location
     private lateinit var sharedPref: SharedPreferences
 
@@ -91,17 +93,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshFAB.setOnClickListener {
-            getCurrentWeatherData(apiResponseBody.name)
+            getWeatherData(currentApiResponseBody.name)
             Toast.makeText(this@MainActivity, "Synchronized!", Toast.LENGTH_SHORT).show()
         }
 
         saveFAB.setOnClickListener {
             saveToFile()
+            Toast.makeText(this@MainActivity, "Saved to file!", Toast.LENGTH_SHORT).show()
         }
 
         buttonSearch.setOnClickListener {
             val inputField = findViewById<TextInputEditText>(R.id.cityInput)
-            getCurrentWeatherData(inputField.text.toString())
+            getWeatherData(inputField.text.toString())
             // exit input field and hide keyboard
             inputField.clearFocus()
             val inputMethodManager =
@@ -131,27 +134,27 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     private fun updateViews() {
         // fragment 1
-        findViewById<TextView>(R.id.tvCityName).text = apiResponseBody.name
+        findViewById<TextView>(R.id.tvCityName).text = currentApiResponseBody.name
         findViewById<TextView>(R.id.tvCoords).text = buildString {
-            append(apiResponseBody.coord.lat)
+            append(currentApiResponseBody.coord.lat)
             append(", ")
-            append(apiResponseBody.coord.lon)
+            append(currentApiResponseBody.coord.lon)
         }
         findViewById<TextView>(R.id.tvTemp).text = buildString {
-            append(apiResponseBody.main.temp.roundToInt())
+            append(currentApiResponseBody.main.temp.roundToInt())
             append("°C")
         }
-        val weatherDesc = apiResponseBody.weather[0].description
+        val weatherDesc = currentApiResponseBody.weather[0].description
         val capitalizedDesc = weatherDesc[0].uppercaseChar() + weatherDesc.substring(1)
         findViewById<TextView>(R.id.tvWeatherDescription).text = capitalizedDesc
         findViewById<TextView>(R.id.tvPressure).text = buildString {
-            append(apiResponseBody.main.pressure)
+            append(currentApiResponseBody.main.pressure)
             append(" hPa")
         }
         findViewById<TextView>(R.id.tvRefreshTime).text =
             SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
         val ivWeatherImage = findViewById<ImageView>(R.id.ivWeatherImage)
-        when (apiResponseBody.weather[0].main) {
+        when (currentApiResponseBody.weather[0].main) {
             "Thunderstorm" -> ivWeatherImage.setImageResource(R.drawable._729387_weather_cloudy_lightning_cloud_forecast)
             "Clouds" -> ivWeatherImage.setImageResource(R.drawable._729391_cloud_weather_forecast_rain_cloudy)
             "Drizzle" -> ivWeatherImage.setImageResource(R.drawable._729390_weather_drip_forecast_drop_cloud)
@@ -164,31 +167,31 @@ class MainActivity : AppCompatActivity() {
 
         // fragment 2
         findViewById<TextView>(R.id.tvWindDetails).text = buildString {
-            append(apiResponseBody.wind.speed.roundToInt())
+            append(currentApiResponseBody.wind.speed.roundToInt())
             append("m/s, ")
-            append(apiResponseBody.wind.deg)
+            append(currentApiResponseBody.wind.deg)
             append("deg")
         }
         findViewById<TextView>(R.id.tvHumidityDetails).text = buildString {
-            append(apiResponseBody.main.humidity)
+            append(currentApiResponseBody.main.humidity)
             append("%")
         }
         findViewById<TextView>(R.id.tvVisibilityDetails).text = buildString {
-            append(apiResponseBody.visibility)
+            append(currentApiResponseBody.visibility)
             append("m")
         }
 
-        Log.d("myResponseBody", apiResponseBody.toString())
+        Log.d("myResponseBody", currentApiResponseBody.toString())
     }
 
     private fun getCurrentWeatherData(city: String) {
         val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
         retrofitData.enqueue(object : Callback<WeatherCurrentModel?> {
             override fun onResponse(call: Call<WeatherCurrentModel?>, response: Response<WeatherCurrentModel?>) {
-                apiResponseBody = response.body()!!
+                currentApiResponseBody = response.body()!!
                 updateViews()
                 saveToFile()
-                Log.d("MainActivity", "Response body 1: $apiResponseBody")
+                Log.d("MainActivity", "Response body 1 (current): $currentApiResponseBody")
             }
 
             override fun onFailure(call: Call<WeatherCurrentModel?>, t: Throwable) {
@@ -197,8 +200,24 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private fun getForecastWeatherData(city: String) {
+        val retrofitData = RetrofitInstance.api.getForecastWeather(city)
+        retrofitData.enqueue(object : Callback<WeatherForecastModel?> {
+            override fun onResponse(call: Call<WeatherForecastModel?>, response: Response<WeatherForecastModel?>) {
+                forecastApiResponseBody = response.body()!!
+                updateViews()
+                saveToFile()
+                Log.d("MainActivity", "Response body 2 (forecast): $forecastApiResponseBody")
+            }
+
+            override fun onFailure(call: Call<WeatherForecastModel?>, t: Throwable) {
+                Log.d("MainActivity", "Error")
+            }
+        })
+    }
+
     private fun saveToFile() {
-        sharedPref.edit().putString("api", Gson().toJson(apiResponseBody)).apply()
+        sharedPref.edit().putString("api", Gson().toJson(currentApiResponseBody)).apply()
     }
 
     private fun permissionInit() {
@@ -231,7 +250,7 @@ class MainActivity : AppCompatActivity() {
         val data = sharedPref.getString("api", null)
         // file does not exist
         if (data == null) {
-            getCurrentWeatherData(cityName)
+            getWeatherData(cityName)
             Toast.makeText(
                 this@MainActivity,
                 "No file saved. Default city ($cityName) is being set.",
@@ -241,7 +260,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             val json = JSONObject(data)
             val lastCity = json.getString("name")
-            getCurrentWeatherData(lastCity)
+            getWeatherData(lastCity)
             Toast.makeText(
                 this@MainActivity,
                 "Last location: $lastCity is being set.",
@@ -299,8 +318,15 @@ class MainActivity : AppCompatActivity() {
             if (addressList.size > 0) {
                 val locatedCity = addressList[0].locality
                 Log.i(TAG, "Located city: $locatedCity")
-                getCurrentWeatherData(locatedCity)
+                getWeatherData(locatedCity)
             }
+        }
+    }
+
+    private fun getWeatherData(city: String?) {
+        if (city != null) {
+            getCurrentWeatherData(city)
+            getForecastWeatherData(city)
         }
     }
 
