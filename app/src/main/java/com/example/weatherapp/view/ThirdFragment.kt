@@ -1,6 +1,7 @@
 package com.example.weatherapp.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,7 @@ class ThirdFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-//        val apiResponse = (activity as MainActivity).currentApiResponseBody
+//        Log.i(TAG, (activity as MainActivity).forecastApiResponseBody.toString())
     }
 
     private fun createContacts(): List<TestData> = buildList{

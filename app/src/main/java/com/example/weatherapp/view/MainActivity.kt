@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private var currentLocation: Location? = null
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
-    lateinit var currentApiResponseBody: WeatherCurrentModel
-    lateinit var forecastApiResponseBody: WeatherForecastModel
+    var currentApiResponseBody: WeatherCurrentModel? = null
+    var forecastApiResponseBody: WeatherForecastModel? = null
     private var cityName: String = "Łódź" // default location
     private lateinit var sharedPref: SharedPreferences
 
@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshFAB.setOnClickListener {
-            getWeatherData(currentApiResponseBody.name)
+            getWeatherData(currentApiResponseBody?.name)
             Toast.makeText(this@MainActivity, "Synchronized!", Toast.LENGTH_SHORT).show()
         }
 
@@ -134,27 +134,27 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SimpleDateFormat")
     private fun updateViews() {
         // fragment 1
-        findViewById<TextView>(R.id.tvCityName).text = currentApiResponseBody.name
+        findViewById<TextView>(R.id.tvCityName).text = currentApiResponseBody!!.name
         findViewById<TextView>(R.id.tvCoords).text = buildString {
-            append(currentApiResponseBody.coord.lat)
+            append(currentApiResponseBody!!.coord.lat)
             append(", ")
-            append(currentApiResponseBody.coord.lon)
+            append(currentApiResponseBody!!.coord.lon)
         }
         findViewById<TextView>(R.id.tvTemp).text = buildString {
-            append(currentApiResponseBody.main.temp.roundToInt())
+            append(currentApiResponseBody!!.main.temp.roundToInt())
             append("°C")
         }
-        val weatherDesc = currentApiResponseBody.weather[0].description
+        val weatherDesc = currentApiResponseBody!!.weather[0].description
         val capitalizedDesc = weatherDesc[0].uppercaseChar() + weatherDesc.substring(1)
         findViewById<TextView>(R.id.tvWeatherDescription).text = capitalizedDesc
         findViewById<TextView>(R.id.tvPressure).text = buildString {
-            append(currentApiResponseBody.main.pressure)
+            append(currentApiResponseBody!!.main.pressure)
             append(" hPa")
         }
         findViewById<TextView>(R.id.tvRefreshTime).text =
             SimpleDateFormat("HH:mm").format(Calendar.getInstance().time)
         val ivWeatherImage = findViewById<ImageView>(R.id.ivWeatherImage)
-        when (currentApiResponseBody.weather[0].main) {
+        when (currentApiResponseBody!!.weather[0].main) {
             "Thunderstorm" -> ivWeatherImage.setImageResource(R.drawable._729387_weather_cloudy_lightning_cloud_forecast)
             "Clouds" -> ivWeatherImage.setImageResource(R.drawable._729391_cloud_weather_forecast_rain_cloudy)
             "Drizzle" -> ivWeatherImage.setImageResource(R.drawable._729390_weather_drip_forecast_drop_cloud)
@@ -167,17 +167,17 @@ class MainActivity : AppCompatActivity() {
 
         // fragment 2
         findViewById<TextView>(R.id.tvWindDetails).text = buildString {
-            append(currentApiResponseBody.wind.speed.roundToInt())
+            append(currentApiResponseBody!!.wind.speed.roundToInt())
             append("m/s, ")
-            append(currentApiResponseBody.wind.deg)
+            append(currentApiResponseBody!!.wind.deg)
             append("deg")
         }
         findViewById<TextView>(R.id.tvHumidityDetails).text = buildString {
-            append(currentApiResponseBody.main.humidity)
+            append(currentApiResponseBody!!.main.humidity)
             append("%")
         }
         findViewById<TextView>(R.id.tvVisibilityDetails).text = buildString {
-            append(currentApiResponseBody.visibility)
+            append(currentApiResponseBody!!.visibility)
             append("m")
         }
 
