@@ -43,6 +43,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.model.WeatherForecastModel
@@ -66,19 +67,33 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onStart() {
         super.onStart()
         runWeatherApp()
         sharedPref = getPreferences(Context.MODE_PRIVATE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun runWeatherApp() {
         uiInit()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isOnline(baseContext)) {
-                permissionInit()
-            } else {
-                readFromFile()
+        if (isOnline(baseContext)) {
+            permissionInit()
+        } else {
+            Toast.makeText(
+                this@MainActivity,
+                "No internet connection. Data could be not valid",
+                Toast.LENGTH_LONG
+            ).show()
+            try {
+                val data = sharedPref.getString("api", null)
+                if (data != null) {
+                    val json = JSONObject(data)
+                    val lastCity = json.getString("name")
+                    findViewById<TextView>(R.id.tvCityName).text = lastCity
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "runWeatherApp: ", e)
             }
         }
     }
@@ -211,7 +226,7 @@ class MainActivity : AppCompatActivity() {
         val retrofitData = RetrofitInstance.api.getCurrentWeather(city)
         retrofitData.enqueue(object : Callback<WeatherCurrentModel?> {
             override fun onResponse(call: Call<WeatherCurrentModel?>, response: Response<WeatherCurrentModel?>) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     currentApiResponseBody = response.body()!!
                     updateViews()
                     saveToFile()
