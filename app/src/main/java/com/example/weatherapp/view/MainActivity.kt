@@ -34,8 +34,13 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkInfo
+import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,7 +74,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun runWeatherApp() {
         uiInit()
-        permissionInit()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isOnline(baseContext)) {
+                permissionInit()
+            } else {
+                readFromFile()
+            }
+        }
     }
 
     private fun uiInit() {
@@ -246,7 +257,9 @@ class MainActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
                     Log.i(TAG, "PERMISSION: Location permission granted")
-                    findMyLocation()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        findMyLocation()
+                    }
                 } else {
                     readFromFile()
                 }
@@ -258,7 +271,9 @@ class MainActivity : AppCompatActivity() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             Log.i(TAG, "PERMISSION: Location permission granted")
-            findMyLocation()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                findMyLocation()
+            }
         } else {
             requestPermissionLauncher.launch(ACCESS_COARSE_LOCATION)
             Log.i(TAG, "PERMISSION: Showed permission window")
@@ -290,6 +305,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun findMyLocation() {
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
@@ -342,6 +358,27 @@ class MainActivity : AppCompatActivity() {
                 getWeatherData(locatedCity)
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
     }
 
     private fun getWeatherData(city: String?) {
