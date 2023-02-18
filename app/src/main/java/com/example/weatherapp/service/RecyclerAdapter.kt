@@ -2,12 +2,13 @@ package com.example.weatherapp.service
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ForecastWeatherRowBinding
 import com.example.weatherapp.model.WeatherList
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.roundToInt
 
 class RecyclerAdapter(private val data: List<WeatherList>) : RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
@@ -25,7 +26,13 @@ class RecyclerAdapter(private val data: List<WeatherList>) : RecyclerView.Adapte
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.tvDate.text = data[position].dt_txt
+        val apiDateString = data[position].dt_txt
+        val dataFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val date = dataFormat.parse(apiDateString)
+        val outputFormat = SimpleDateFormat("HH:mm EEEE, dd MMM", Locale.ENGLISH)
+        val outputDateString = date?.let { outputFormat.format(it) }
+        holder.tvDate.text = outputDateString
+
         val weatherDesc = data[position].weather[0].description
         val capitalizedDesc = weatherDesc[0].uppercaseChar() + weatherDesc.substring(1)
         holder.tvWeatherDescription.text = capitalizedDesc

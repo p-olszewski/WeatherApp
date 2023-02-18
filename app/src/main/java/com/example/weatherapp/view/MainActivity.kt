@@ -307,7 +307,7 @@ class MainActivity : AppCompatActivity() {
                 "No file saved. Default city ($cityName) is being set.",
                 Toast.LENGTH_LONG
             ).show()
-            // file exist
+        // file exist
         } else {
             val json = JSONObject(data)
             val lastCity = json.getString("name")
