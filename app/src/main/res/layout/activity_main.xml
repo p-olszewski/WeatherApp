@@ -12,10 +12,14 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:boxStrokeColor="@color/blue_500"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        app:boxBackgroundMode="outline"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
+        android:padding="0dp"
+        android:paddingTop="0dp"
+
         app:layout_constraintEnd_toStartOf="@+id/buttonSearch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -30,9 +34,10 @@
     <Button
         android:id="@+id/buttonSearch"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="55dp"
         android:layout_marginEnd="16dp"
         android:text="search"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textInputLayout" />
