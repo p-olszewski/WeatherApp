@@ -19,6 +19,7 @@ class RecyclerAdapter(private val data: List<WeatherList>) :
         val tvWeatherDescription = binding.tvWeatherDescription
         val ivWeatherImage = binding.ivWeatherImage
         val tvTemp = binding.tvTemp
+        val divider = binding.divider
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -53,6 +54,17 @@ class RecyclerAdapter(private val data: List<WeatherList>) :
             "Mist", "Fog", "Haze" -> holder.ivWeatherImage.setImageResource(R.drawable._729389_weather_foggy_cloudy_forecast_cloud)
             else -> holder.ivWeatherImage.setImageResource(R.drawable._729392_cloudy_sunny_forecast_sun_cloud_weather)
         }
+        if (position > 0) {
+            val prevWeather = data[position - 1]
+            // show divider if the date is different
+            if (prevWeather.dt_txt.substring(0, 10) != currentWeather.dt_txt.substring(0, 10)) {
+                holder.divider.visibility = View.VISIBLE
+            } else {
+                holder.divider.visibility = View.GONE
+            }
+        }
+
+
     }
 
     override fun getItemCount(): Int {
