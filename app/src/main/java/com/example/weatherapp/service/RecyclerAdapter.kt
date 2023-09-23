@@ -11,8 +11,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
-class RecyclerAdapter(private val data: List<WeatherList>) : RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
-    inner class MyViewHolder(binding: ForecastWeatherRowBinding): ViewHolder(binding.root) {
+class RecyclerAdapter(private val data: List<WeatherList>) :
+    RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
+    inner class MyViewHolder(binding: ForecastWeatherRowBinding) : ViewHolder(binding.root) {
         val tvDate = binding.tvDate
         val tvWeatherDescription = binding.tvWeatherDescription
         val ivWeatherImage = binding.ivWeatherImage
