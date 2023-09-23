@@ -33,7 +33,7 @@ class RecyclerAdapter(private val data: List<WeatherList>) :
         val apiDateString = currentWeather.dt_txt
         val dataFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = dataFormat.parse(apiDateString)
-        val outputFormat = SimpleDateFormat("HH:mm EEEE, dd MMM", Locale.ENGLISH)
+        val outputFormat = SimpleDateFormat("EEEE dd MMM, HH:mm", Locale.ENGLISH)
         val outputDateString = date?.let { outputFormat.format(it) }
         holder.tvDate.text = outputDateString
 
