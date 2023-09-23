@@ -1,6 +1,7 @@
 package com.example.weatherapp.service
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -27,7 +28,8 @@ class RecyclerAdapter(private val data: List<WeatherList>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val apiDateString = data[position].dt_txt
+        val currentWeather = data[position]
+        val apiDateString = currentWeather.dt_txt
         val dataFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = dataFormat.parse(apiDateString)
         val outputFormat = SimpleDateFormat("HH:mm EEEE, dd MMM", Locale.ENGLISH)
